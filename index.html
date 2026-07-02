@@ -1,17 +1,1910 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>L'ÉLIXIR | Luxury Artisanal Coffee & Bakery</title>
-    <meta name="description" content="Experience master-roasted single origin coffee, artisanal pastries, and immersive luxury ambiance at L'Élixir." />
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Italiana&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Maison du Café — Premium Coffee Experience</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   CSS VARIABLES — theme customization
+   ============================================ */
+:root {
+  --coffee-dark: #1f120b;
+  --coffee-deep: #2c1810;
+  --coffee-brown: #5c3a21;
+  --coffee-medium: #8b5e3c;
+  --coffee-light: #a97853;
+  --cream: #f5e6d3;
+  --cream-soft: #faf1e4;
+  --beige: #e8d5b7;
+  --beige-dark: #c9b089;
+  --gold: #c9a961;
+  --gold-bright: #e6c77f;
+  --accent: #d4a574;
+  --text-dark: #2a1a10;
+  --text-light: #f5e6d3;
+  --glass-bg: rgba(245, 230, 211, 0.08);
+  --glass-border: rgba(245, 230, 211, 0.18);
+  --shadow-soft: 0 10px 40px rgba(44, 24, 16, 0.25);
+  --shadow-strong: 0 20px 60px rgba(44, 24, 16, 0.45);
+  --shadow-glow: 0 0 30px rgba(201, 169, 97, 0.35);
+
+  --font-serif: 'Playfair Display', serif;
+  --font-sans: 'Poppins', sans-serif;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --transition: 0.4s var(--ease);
+  --transition-slow: 0.7s var(--ease);
+}
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-sans);
+  background: var(--cream-soft);
+  color: var(--text-dark);
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><circle cx='16' cy='16' r='6' fill='%23c9a961' opacity='0.9'/><circle cx='16' cy='16' r='12' fill='none' stroke='%23c9a961' stroke-width='1.5' opacity='0.6'/></svg>") 16 16, auto;
+}
+a, button, input, textarea, label, .interactive {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'><circle cx='24' cy='24' r='10' fill='%23e6c77f' opacity='0.85'/><circle cx='24' cy='24' r='20' fill='none' stroke='%23e6c77f' stroke-width='1.5' opacity='0.7'/><circle cx='24' cy='24' r='2' fill='%231f120b'/></svg>") 24 24, pointer;
+}
+img { max-width: 100%; display: block; }
+ul { list-style: none; }
+a { text-decoration: none; color: inherit; }
+section { position: relative; padding: 7rem 1.5rem; overflow: hidden; }
+.container { max-width: 1240px; margin: 0 auto; width: 100%; }
+
+/* ============================================
+   CUSTOM CURSOR PULSE OVERLAY (pure CSS deco)
+   ============================================ */
+.cursor-deco {
+  position: fixed;
+  top: 2rem; right: 2rem;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 0 0 0 rgba(201, 169, 97, 0.8);
+  animation: cursorPulse 2s infinite;
+  opacity: 0; /* hidden marker; the real cursor follows the mouse via svg data uri */
+}
+@keyframes cursorPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(201, 169, 97, 0.7); }
+  70%  { box-shadow: 0 0 0 18px rgba(201, 169, 97, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(201, 169, 97, 0); }
+}
+
+/* ============================================
+   LOADING ANIMATION
+   ============================================ */
+.loader {
+  position: fixed; inset: 0;
+  background: linear-gradient(135deg, var(--coffee-deep), var(--coffee-dark));
+  z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  animation: loaderFade 1.2s 2.4s forwards;
+}
+.loader-cup {
+  position: relative;
+  width: 90px; height: 80px;
+}
+.loader-cup .cup {
+  position: absolute; bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 70px; height: 52px;
+  border: 3px solid var(--gold);
+  border-top: none;
+  border-radius: 0 0 30px 30px;
+  background: linear-gradient(180deg, rgba(201,169,97,0.15), rgba(201,169,97,0.05));
+}
+.loader-cup .handle {
+  position: absolute; bottom: 18px; right: -2px;
+  width: 18px; height: 26px;
+  border: 3px solid var(--gold);
+  border-left: none;
+  border-radius: 0 14px 14px 0;
+}
+.loader-cup .steam {
+  position: absolute; top: -22px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 6px;
+}
+.loader-cup .steam span {
+  display: block;
+  width: 3px; height: 18px;
+  background: var(--gold);
+  border-radius: 2px;
+  animation: steam 1.4s infinite ease-in-out;
+}
+.loader-cup .steam span:nth-child(2) { animation-delay: 0.2s; }
+.loader-cup .steam span:nth-child(3) { animation-delay: 0.4s; }
+.loader-text {
+  position: absolute; bottom: 28%;
+  font-family: var(--font-serif);
+  color: var(--gold);
+  letter-spacing: 0.4em;
+  font-size: 0.85rem;
+  animation: textReveal 2s ease forwards;
+}
+@keyframes loaderFade {
+  0%   { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+@keyframes steam {
+  0%   { transform: translateY(0) scaleY(1); opacity: 0.8; }
+  50%  { transform: translateY(-14px) scaleY(1.4); opacity: 0.4; }
+  100% { transform: translateY(-28px) scaleY(1); opacity: 0; }
+}
+@keyframes textReveal {
+  0%   { opacity: 0; letter-spacing: 1em; }
+  100% { opacity: 1; letter-spacing: 0.4em; }
+}
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 1.25rem 2rem;
+  background: linear-gradient(180deg, rgba(31,18,11,0.6), rgba(31,18,11,0.25));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(245, 230, 211, 0.12);
+  transition: var(--transition);
+}
+.nav-inner {
+  max-width: 1280px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo {
+  font-family: var(--font-serif);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--cream);
+  letter-spacing: 0.04em;
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  transition: var(--transition);
+}
+.logo-mark {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, var(--gold-bright), var(--coffee-brown));
+  box-shadow: var(--shadow-glow);
+  position: relative;
+  transition: var(--transition);
+}
+.logo-mark::after {
+  content: "☕";
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--coffee-dark);
+  font-size: 1rem;
+}
+.logo:hover { color: var(--gold); transform: translateY(-2px); }
+.logo:hover .logo-mark { transform: rotate(15deg) scale(1.1); }
+
+.nav-menu { display: flex; gap: 2.2rem; }
+.nav-menu a {
+  position: relative;
+  color: var(--cream);
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0;
+  transition: var(--transition);
+}
+.nav-menu a::after {
+  content: "";
+  position: absolute; left: 0; bottom: -4px;
+  width: 0; height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--accent));
+  transition: width 0.4s var(--ease);
+}
+.nav-menu a:hover { color: var(--gold); }
+.nav-menu a:hover::after { width: 100%; }
+
+.nav-cta {
+  padding: 0.6rem 1.4rem;
+  border: 1.5px solid var(--gold);
+  color: var(--gold);
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.nav-cta:hover {
+  background: var(--gold); color: var(--coffee-dark);
+  box-shadow: var(--shadow-glow);
+}
+
+.menu-toggle { display: none; }
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+.hero {
+  min-height: 100vh;
+  padding: 0;
+  display: flex; align-items: center;
+  color: var(--cream);
+  background:
+    linear-gradient(180deg, rgba(31,18,11,0.75) 0%, rgba(44,24,16,0.85) 60%, rgba(31,18,11,0.95) 100%),
+    url('https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=1800&q=80') center/cover no-repeat;
+  position: relative;
+}
+.hero::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(201,169,97,0.18), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(139,94,60,0.22), transparent 50%);
+  pointer-events: none;
+}
+
+.hero-grid {
+  max-width: 1280px; margin: 0 auto;
+  padding: 0 2rem;
+  display: grid; grid-template-columns: 1.2fr 1fr;
+  align-items: center;
+  gap: 4rem;
+  position: relative; z-index: 2;
+  width: 100%;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid rgba(201, 169, 97, 0.5);
+  border-radius: 50px;
+  background: rgba(201, 169, 97, 0.08);
+  font-size: 0.78rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 1s 2.6s both;
+}
+.hero-badge .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 10px var(--gold);
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50%     { transform: scale(1.4); opacity: 0.7; }
+}
+
+.hero h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(2.8rem, 6vw, 5.2rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.2rem;
+  animation: fadeInUp 1.2s 2.8s both;
+}
+.hero h1 .italic {
+  font-style: italic;
+  color: var(--gold);
+  display: inline-block;
+  animation: textGlow 3s ease-in-out infinite alternate;
+}
+@keyframes textGlow {
+  from { text-shadow: 0 0 20px rgba(201,169,97,0.3); }
+  to   { text-shadow: 0 0 40px rgba(201,169,97,0.6); }
+}
+
+.hero-sub {
+  font-size: 1.05rem;
+  color: rgba(245,230,211,0.8);
+  max-width: 520px;
+  margin-bottom: 2.2rem;
+  animation: fadeInUp 1.2s 3s both;
+}
+
+.hero-cta {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  animation: fadeInUp 1.2s 3.2s both;
+}
+
+.btn {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 0.7rem;
+  padding: 1rem 2rem;
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border-radius: 50px;
+  border: none;
+  overflow: hidden;
+  transition: var(--transition);
+  text-transform: uppercase;
+  z-index: 1;
+}
+.btn::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg, var(--gold), var(--accent), var(--gold-bright));
+  background-size: 200% 200%;
+  z-index: -1;
+  transition: var(--transition);
+  animation: gradientShift 4s ease infinite;
+}
+.btn-primary { color: var(--coffee-dark); }
+.btn-primary::before { background-position: 0% 50%; }
+.btn-primary:hover::before { background-position: 100% 50%; }
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(201,169,97,0.45), 0 0 25px rgba(201,169,97,0.4);
+}
+.btn-outline {
+  color: var(--cream);
+  background: transparent;
+  border: 1.5px solid rgba(245,230,211,0.4);
+}
+.btn-outline::before { background: transparent; }
+.btn-outline:hover {
+  border-color: var(--gold); color: var(--gold);
+  transform: translateY(-3px);
+}
+.btn .arrow {
+  display: inline-block;
+  transition: transform 0.3s var(--ease);
+}
+.btn:hover .arrow { transform: translateX(5px); }
+
+@keyframes gradientShift {
+  0%,100% { background-position: 0% 50%; }
+  50%     { background-position: 100% 50%; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* floating coffee cup illustration */
+.hero-cup-wrap {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  height: 480px;
+  animation: fadeIn 1.5s 3.4s both;
+}
+.hero-cup {
+  position: relative;
+  width: 260px; height: 300px;
+  animation: floatCup 5s ease-in-out infinite;
+}
+.hero-cup .cup-body {
+  position: absolute; bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 220px; height: 180px;
+  background: linear-gradient(160deg, #f8e9d1, #e8d5b7 60%, #c9b089);
+  border-radius: 10px 10px 100px 100px / 10px 10px 60px 60px;
+  box-shadow:
+    inset -18px 0 40px rgba(44,24,16,0.3),
+    inset 18px 0 40px rgba(255,255,255,0.4),
+    0 30px 60px rgba(0,0,0,0.45);
+  overflow: hidden;
+}
+.hero-cup .coffee {
+  position: absolute; top: 10px; left: 10px; right: 10px;
+  height: 30px;
+  background: radial-gradient(ellipse at center, #3a1f12 20%, #1f120b 90%);
+  border-radius: 50%;
+  box-shadow: inset 0 -6px 14px rgba(0,0,0,0.5);
+}
+.hero-cup .coffee::after {
+  content: "";
+  position: absolute; top: 40%; left: 30%;
+  width: 18px; height: 6px;
+  background: rgba(245,230,211,0.4);
+  border-radius: 50%;
+  filter: blur(2px);
+}
+.hero-cup .handle {
+  position: absolute; right: -32px; top: 50px;
+  width: 60px; height: 80px;
+  border: 14px solid #e8d5b7;
+  border-left: none;
+  border-radius: 0 50px 50px 0;
+  box-shadow: 6px 8px 20px rgba(0,0,0,0.3);
+}
+.hero-cup .plate {
+  position: absolute; bottom: -18px; left: 50%;
+  transform: translateX(-50%);
+  width: 300px; height: 24px;
+  background: linear-gradient(180deg, #d4c1a2, #a98865);
+  border-radius: 50%;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.hero-cup .steam-wrap {
+  position: absolute; top: -60px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 14px;
+}
+.hero-cup .steam-wrap span {
+  display: block;
+  width: 8px; height: 50px;
+  background: linear-gradient(180deg, rgba(245,230,211,0.7), rgba(245,230,211,0));
+  border-radius: 50%;
+  filter: blur(3px);
+  animation: steamBig 2.8s infinite ease-in-out;
+}
+.hero-cup .steam-wrap span:nth-child(2) { animation-delay: 0.5s; }
+.hero-cup .steam-wrap span:nth-child(3) { animation-delay: 1s; }
+@keyframes steamBig {
+  0%   { transform: translateY(0) scaleX(1); opacity: 0; }
+  30%  { opacity: 0.9; }
+  100% { transform: translateY(-80px) scaleX(1.6); opacity: 0; }
+}
+@keyframes floatCup {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50%     { transform: translateY(-20px) rotate(2deg); }
+}
+
+/* floating coffee beans around hero cup */
+.bean {
+  position: absolute;
+  width: 26px; height: 38px;
+  background: radial-gradient(ellipse at 40% 40%, #6b3a1f, #2c1810);
+  border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%;
+  box-shadow: inset -3px -3px 6px rgba(0,0,0,0.4), 0 8px 20px rgba(0,0,0,0.3);
+}
+.bean::after {
+  content: "";
+  position: absolute; top: 20%; left: 45%;
+  width: 2px; height: 60%;
+  background: rgba(0,0,0,0.5);
+  border-radius: 2px;
+}
+.bean.b1 { top: 15%; left: 10%;  animation: floatBean 6s ease-in-out infinite; }
+.bean.b2 { top: 70%; left: 5%;   animation: floatBean 7s ease-in-out infinite 1s; }
+.bean.b3 { top: 25%; right: 5%;  animation: floatBean 8s ease-in-out infinite 2s; transform: rotate(30deg); }
+.bean.b4 { bottom: 15%; right: 15%; animation: floatBean 5s ease-in-out infinite 0.5s; transform: rotate(-40deg); }
+.bean.b5 { top: 50%; left: 0;    animation: floatBean 9s ease-in-out infinite 1.5s; transform: rotate(60deg); }
+@keyframes floatBean {
+  0%,100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50%     { transform: translateY(-25px) rotate(calc(var(--r, 0deg) + 20deg)); }
+}
+.bean.b1 { --r: 0deg; } .bean.b2 { --r: 25deg; }
+.bean.b3 { --r: 30deg; } .bean.b4 { --r: -40deg; } .bean.b5 { --r: 60deg; }
+
+/* rotating coffee icon (decorative) */
+.rotating-icon {
+  position: absolute;
+  top: 8%; right: 10%;
+  width: 70px; height: 70px;
+  border: 2px dashed rgba(201,169,97,0.5);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  animation: spin 18s linear infinite;
+}
+.rotating-icon::before {
+  content: "☕";
+  font-size: 1.5rem;
+  color: var(--gold);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================
+   SECTION HEADINGS
+   ============================================ */
+.section-head { text-align: center; margin-bottom: 4rem; }
+.section-tag {
+  display: inline-block;
+  font-size: 0.78rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--coffee-medium);
+  margin-bottom: 0.8rem;
+  position: relative;
+  padding: 0 2rem;
+}
+.section-tag::before, .section-tag::after {
+  content: "";
+  position: absolute; top: 50%;
+  width: 30px; height: 1px;
+  background: var(--coffee-medium);
+}
+.section-tag::before { left: -20px; }
+.section-tag::after  { right: -20px; }
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
+  font-weight: 700;
+  color: var(--coffee-deep);
+  line-height: 1.15;
+  margin-bottom: 0.8rem;
+}
+.section-title .italic {
+  font-style: italic; color: var(--coffee-medium);
+}
+.section-sub {
+  max-width: 620px;
+  margin: 0 auto;
+  color: var(--coffee-brown);
+  opacity: 0.85;
+}
+
+/* ============================================
+   ABOUT SECTION
+   ============================================ */
+.about {
+  background: var(--cream-soft);
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 5rem;
+  align-items: center;
+}
+.about-img-wrap {
+  position: relative;
+}
+.about-img {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-strong);
+  transform: rotate(-3deg);
+  transition: var(--transition-slow);
+}
+.about-img img {
+  width: 100%; height: 480px;
+  object-fit: cover;
+  transition: transform 0.8s var(--ease);
+}
+.about-img:hover { transform: rotate(0deg); }
+.about-img:hover img { transform: scale(1.08); }
+.about-img::after {
+  content: "";
+  position: absolute; top: 0; left: -80%;
+  width: 50%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.8s var(--ease);
+}
+.about-img:hover::after { left: 130%; }
+
+.about-badge-float {
+  position: absolute;
+  bottom: -30px; right: -30px;
+  background: var(--coffee-deep);
+  color: var(--cream);
+  padding: 1.5rem 2rem;
+  border-radius: 18px;
+  box-shadow: var(--shadow-strong);
+  animation: floatCup 6s ease-in-out infinite;
+}
+.about-badge-float .big {
+  font-family: var(--font-serif);
+  font-size: 2.4rem; font-weight: 700;
+  color: var(--gold);
+  display: block;
+}
+.about-badge-float .small {
+  font-size: 0.78rem; letter-spacing: 0.2em;
+  text-transform: uppercase; opacity: 0.8;
+}
+
+.about-content h3 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  color: var(--coffee-deep);
+  line-height: 1.2;
+  margin-bottom: 1.2rem;
+}
+.about-content h3 em { color: var(--coffee-medium); font-style: italic; }
+.about-content p {
+  color: var(--coffee-brown);
+  margin-bottom: 1.2rem;
+  font-size: 1rem;
+}
+.about-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  margin: 2rem 0;
+}
+.stat {
+  text-align: center;
+  padding: 1.3rem 0.5rem;
+  background: rgba(255,255,255,0.6);
+  border-radius: 14px;
+  border: 1px solid rgba(92,58,33,0.12);
+  transition: var(--transition);
+}
+.stat:hover { transform: translateY(-6px); box-shadow: var(--shadow-soft); }
+.stat .num {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--coffee-deep);
+  display: block;
+}
+.stat .lbl {
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--coffee-medium);
+}
+
+/* ============================================
+   FEATURED COFFEE — dark section
+   ============================================ */
+.featured {
+  background:
+    linear-gradient(135deg, rgba(31,18,11,0.94), rgba(44,24,16,0.92)),
+    url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1800&q=80') center/cover fixed;
+  color: var(--cream);
+}
+.featured .section-title { color: var(--cream); }
+.featured .section-title .italic { color: var(--gold); }
+.featured .section-sub { color: rgba(245,230,211,0.75); }
+.featured .section-tag { color: var(--gold); }
+.featured .section-tag::before, .featured .section-tag::after { background: var(--gold); }
+
+.coffee-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+}
+.coffee-card {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 1.8rem;
+  transition: var(--transition);
+  overflow: hidden;
+}
+.coffee-card::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s var(--ease);
+}
+.coffee-card:hover {
+  transform: translateY(-10px);
+  border-color: rgba(201,169,97,0.5);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 30px rgba(201,169,97,0.15);
+}
+.coffee-card:hover::before { transform: translateX(100%); }
+
+.coffee-img {
+  position: relative;
+  height: 220px;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 1.2rem;
+  background: rgba(0,0,0,0.3);
+}
+.coffee-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease);
+}
+.coffee-card:hover .coffee-img img { transform: scale(1.12); }
+.coffee-tag {
+  position: absolute; top: 12px; right: 12px;
+  padding: 0.35rem 0.9rem;
+  background: var(--gold);
+  color: var(--coffee-dark);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 50px;
+}
+.coffee-card h3 {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  margin-bottom: 0.4rem;
+  color: var(--cream);
+}
+.coffee-card .desc {
+  font-size: 0.88rem;
+  color: rgba(245,230,211,0.7);
+  margin-bottom: 1.2rem;
+}
+.coffee-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(245,230,211,0.12);
+}
+.coffee-price {
+  font-family: var(--font-serif);
+  font-size: 1.7rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+.coffee-stars {
+  color: var(--gold);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+}
+
+/* ============================================
+   SPECIAL MENU
+   ============================================ */
+.menu { background: var(--cream-soft); }
+.menu-tabs {
+  display: flex; justify-content: center; gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+.tab-pill {
+  padding: 0.7rem 1.6rem;
+  background: transparent;
+  border: 1.5px solid rgba(92,58,33,0.3);
+  color: var(--coffee-brown);
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  transition: var(--transition);
+}
+.tab-pill:hover, .tab-pill.active {
+  background: var(--coffee-deep);
+  color: var(--cream);
+  border-color: var(--coffee-deep);
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+.menu-item {
+  display: flex; gap: 1.2rem;
+  padding: 1.4rem;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid rgba(92,58,33,0.08);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.menu-item::before {
+  content: "";
+  position: absolute; top: 0; left: 0;
+  width: 4px; height: 0;
+  background: linear-gradient(180deg, var(--gold), var(--coffee-medium));
+  transition: height 0.4s var(--ease);
+}
+.menu-item:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-soft);
+  border-color: transparent;
+}
+.menu-item:hover::before { height: 100%; }
+
+.menu-item-img {
+  flex-shrink: 0;
+  width: 90px; height: 90px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--beige);
+}
+.menu-item-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s var(--ease);
+}
+.menu-item:hover .menu-item-img img { transform: scale(1.15); }
+
+.menu-item-body { flex: 1; }
+.menu-item-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 0.4rem;
+}
+.menu-item-head h4 {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  color: var(--coffee-deep);
+}
+.menu-item-head .price {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  color: var(--coffee-medium);
+  font-size: 1.1rem;
+}
+.menu-item p {
+  font-size: 0.85rem;
+  color: var(--coffee-brown);
+  opacity: 0.85;
+  line-height: 1.5;
+}
+
+/* ============================================
+   WHY CHOOSE US
+   ============================================ */
+.why {
+  background: linear-gradient(180deg, var(--cream-soft), var(--cream));
+  position: relative;
+}
+.why::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--coffee-light), transparent);
+}
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+}
+.why-card {
+  text-align: center;
+  padding: 2.5rem 1.8rem;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(92,58,33,0.1);
+  border-radius: 20px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.why-card::after {
+  content: "";
+  position: absolute;
+  bottom: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(201,169,97,0.18), transparent 55%);
+  opacity: 0;
+  transition: var(--transition-slow);
+}
+.why-card:hover {
+  transform: translateY(-12px);
+  box-shadow: var(--shadow-strong);
+  background: rgba(255,255,255,0.9);
+  border-color: var(--gold);
+}
+.why-card:hover::after { opacity: 1; }
+
+.why-icon {
+  width: 80px; height: 80px;
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(135deg, var(--coffee-deep), var(--coffee-brown));
+  border-radius: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+  color: var(--gold);
+  position: relative;
+  z-index: 1;
+  transition: var(--transition);
+  box-shadow: 0 10px 30px rgba(44,24,16,0.3);
+}
+.why-card:hover .why-icon {
+  transform: rotate(-8deg) scale(1.08);
+  background: linear-gradient(135deg, var(--gold), var(--accent));
+  color: var(--coffee-dark);
+}
+.why-card h4 {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  color: var(--coffee-deep);
+  margin-bottom: 0.7rem;
+  position: relative; z-index: 1;
+}
+.why-card p {
+  font-size: 0.9rem;
+  color: var(--coffee-brown);
+  position: relative; z-index: 1;
+}
+
+/* bouncing icon animation */
+.bounce { animation: bounce 2.5s ease-in-out infinite; }
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-8px); }
+}
+
+/* ============================================
+   GALLERY
+   ============================================ */
+.gallery { background: var(--cream-soft); }
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 200px;
+  gap: 1rem;
+}
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.gallery-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--ease);
+}
+.gallery-item::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(31,18,11,0.85));
+  opacity: 0;
+  transition: var(--transition);
+}
+.gallery-item::before {
+  content: "";
+  position: absolute; top: 0; left: -80%;
+  width: 60%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.8s var(--ease);
+  z-index: 2;
+}
+.gallery-item:hover img { transform: scale(1.12); }
+.gallery-item:hover::after { opacity: 1; }
+.gallery-item:hover::before { left: 130%; }
+
+.gallery-caption {
+  position: absolute; bottom: 15px; left: 20px;
+  color: var(--cream);
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  z-index: 3;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: var(--transition);
+}
+.gallery-item:hover .gallery-caption {
+  transform: translateY(0); opacity: 1;
+}
+.gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+.gallery-item:nth-child(5) { grid-row: span 2; }
+.gallery-item:nth-child(6) { grid-column: span 2; }
+
+/* ============================================
+   TESTIMONIALS
+   ============================================ */
+.testimonials {
+  background:
+    linear-gradient(135deg, rgba(44,24,16,0.95), rgba(31,18,11,0.95)),
+    url('https://images.unsplash.com/photo-1559496417-e7f25cb247f3?auto=format&fit=crop&w=1800&q=80') center/cover;
+  color: var(--cream);
+}
+.testimonials .section-title { color: var(--cream); }
+.testimonials .section-title .italic { color: var(--gold); }
+.testimonials .section-sub { color: rgba(245,230,211,0.7); }
+.testimonials .section-tag { color: var(--gold); }
+.testimonials .section-tag::before, .testimonials .section-tag::after { background: var(--gold); }
+
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+.testi-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 2.2rem;
+  transition: var(--transition);
+  position: relative;
+}
+.testi-card::before {
+  content: "“";
+  position: absolute; top: -10px; left: 20px;
+  font-family: var(--font-serif);
+  font-size: 6rem;
+  color: var(--gold);
+  opacity: 0.5;
+  line-height: 1;
+}
+.testi-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(201,169,97,0.5);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+.testi-text {
+  font-style: italic;
+  color: rgba(245,230,211,0.9);
+  margin: 1.5rem 0 2rem;
+  font-size: 0.98rem;
+  line-height: 1.7;
+  position: relative; z-index: 1;
+}
+.testi-person {
+  display: flex; align-items: center; gap: 1rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(245,230,211,0.12);
+}
+.testi-avatar {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--coffee-medium));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  color: var(--coffee-dark);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.testi-person .name {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  color: var(--cream);
+  font-size: 1.05rem;
+}
+.testi-person .role {
+  font-size: 0.78rem;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.testi-stars {
+  color: var(--gold);
+  letter-spacing: 3px;
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+}
+
+/* ============================================
+   RESERVATION
+   ============================================ */
+.reservation { background: var(--cream-soft); }
+.reserve-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 4rem;
+  align-items: center;
+}
+.reserve-img {
+  border-radius: 20px;
+  overflow: hidden;
+  height: 560px;
+  box-shadow: var(--shadow-strong);
+  position: relative;
+}
+.reserve-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 1s var(--ease);
+}
+.reserve-img:hover img { transform: scale(1.08); }
+.reserve-img::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(31,18,11,0.6));
+}
+.reserve-overlay {
+  position: absolute; bottom: 30px; left: 30px; right: 30px;
+  color: var(--cream);
+  z-index: 2;
+}
+.reserve-overlay h4 {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+.reserve-overlay p { font-size: 0.9rem; opacity: 0.9; }
+
+.reserve-form {
+  background: white;
+  padding: 3rem;
+  border-radius: 24px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(92,58,33,0.1);
+}
+.reserve-form h3 {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  color: var(--coffee-deep);
+  margin-bottom: 0.5rem;
+}
+.reserve-form .form-sub {
+  color: var(--coffee-brown);
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.form-group { position: relative; }
+.form-group.full { grid-column: 1 / -1; }
+.form-group label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--coffee-medium);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  background: var(--cream-soft);
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--coffee-deep);
+  transition: var(--transition);
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'><circle cx='24' cy='24' r='10' fill='%23e6c77f' opacity='0.85'/><circle cx='24' cy='24' r='20' fill='none' stroke='%23e6c77f' stroke-width='1.5' opacity='0.7'/><circle cx='24' cy='24' r='2' fill='%231f120b'/></svg>") 24 24, text;
+}
+.form-group textarea { resize: vertical; min-height: 110px; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(201,169,97,0.18);
+}
+.reserve-form .btn {
+  width: 100%;
+  justify-content: center;
+  margin-top: 1rem;
+  padding: 1.1rem;
+}
+
+/* ============================================
+   CONTACT
+   ============================================ */
+.contact {
+  background: var(--coffee-deep);
+  color: var(--cream);
+}
+.contact .section-title { color: var(--cream); }
+.contact .section-title .italic { color: var(--gold); }
+.contact .section-sub { color: rgba(245,230,211,0.7); }
+.contact .section-tag { color: var(--gold); }
+.contact .section-tag::before, .contact .section-tag::after { background: var(--gold); }
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+}
+.contact-card {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  transition: var(--transition);
+  backdrop-filter: blur(10px);
+}
+.contact-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--gold);
+  background: rgba(201,169,97,0.08);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+.contact-icon {
+  width: 60px; height: 60px;
+  margin: 0 auto 1.3rem;
+  background: linear-gradient(135deg, var(--gold), var(--accent));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  color: var(--coffee-dark);
+  transition: var(--transition);
+}
+.contact-card:hover .contact-icon { transform: rotate(360deg) scale(1.1); }
+.contact-card h4 {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  color: var(--gold);
+  margin-bottom: 0.6rem;
+}
+.contact-card p {
+  color: rgba(245,230,211,0.8);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+  background: var(--coffee-dark);
+  color: var(--cream);
+  padding: 4rem 1.5rem 2rem;
+  border-top: 1px solid rgba(201,169,97,0.2);
+}
+.footer-grid {
+  max-width: 1240px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+.footer-col h5 {
+  font-family: var(--font-serif);
+  color: var(--gold);
+  font-size: 1.15rem;
+  margin-bottom: 1.2rem;
+}
+.footer-col p, .footer-col li {
+  color: rgba(245,230,211,0.7);
+  font-size: 0.9rem;
+  margin-bottom: 0.6rem;
+}
+.footer-col a { transition: var(--transition); }
+.footer-col a:hover { color: var(--gold); padding-left: 4px; }
+.footer-brand p { margin-top: 1rem; max-width: 320px; }
+
+.socials {
+  display: flex; gap: 0.8rem;
+  margin-top: 1.2rem;
+}
+.social-link {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(201,169,97,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.95rem;
+  transition: var(--transition);
+  color: var(--cream);
+  position: relative;
+  overflow: hidden;
+}
+.social-link::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: var(--gold);
+  transform: scale(0);
+  transition: transform 0.4s var(--ease);
+  border-radius: 50%;
+}
+.social-link:hover { color: var(--coffee-dark); border-color: var(--gold); transform: translateY(-4px); }
+.social-link:hover::before { transform: scale(1); }
+.social-link span { position: relative; z-index: 1; }
+
+.newsletter {
+  margin-top: 1rem;
+  display: flex;
+  background: rgba(245,230,211,0.08);
+  border: 1px solid rgba(245,230,211,0.15);
+  border-radius: 50px;
+  padding: 0.3rem;
+  transition: var(--transition);
+}
+.newsletter:focus-within { border-color: var(--gold); }
+.newsletter input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0.6rem 1rem;
+  color: var(--cream);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+}
+.newsletter input::placeholder { color: rgba(245,230,211,0.5); }
+.newsletter button {
+  background: var(--gold);
+  color: var(--coffee-dark);
+  border: none;
+  border-radius: 50px;
+  padding: 0.6rem 1.4rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  transition: var(--transition);
+}
+.newsletter button:hover { background: var(--gold-bright); }
+
+.footer-bottom {
+  max-width: 1240px; margin: 0 auto;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(245,230,211,0.1);
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 1rem;
+  font-size: 0.85rem;
+  color: rgba(245,230,211,0.6);
+}
+.footer-bottom a { color: rgba(245,230,211,0.6); transition: var(--transition); }
+.footer-bottom a:hover { color: var(--gold); }
+
+/* ============================================
+   FLOATING DECORATIONS (beans around page)
+   ============================================ */
+.decor-bean {
+  position: absolute;
+  width: 20px; height: 30px;
+  background: radial-gradient(ellipse at 40% 40%, #6b3a1f, #2c1810);
+  border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%;
+  opacity: 0.18;
+  pointer-events: none;
+}
+.decor-bean::after {
+  content: "";
+  position: absolute; top: 20%; left: 45%;
+  width: 1.5px; height: 60%;
+  background: rgba(0,0,0,0.4);
+  border-radius: 2px;
+}
+.about  .decor-bean.d1 { top: 10%; right: 8%;  animation: floatBean 7s ease-in-out infinite; --r: 20deg; }
+.about  .decor-bean.d2 { bottom: 15%; left: 5%; animation: floatBean 9s ease-in-out infinite 1s; --r: -30deg; }
+.menu   .decor-bean.d1 { top: 8%;  left: 6%;   animation: floatBean 8s ease-in-out infinite 0.5s; --r: 45deg; }
+.menu   .decor-bean.d2 { bottom: 10%; right: 8%; animation: floatBean 7s ease-in-out infinite 2s; --r: -15deg; }
+.gallery .decor-bean.d1 { top: 5%; right: 10%; animation: floatBean 10s ease-in-out infinite; --r: 60deg; }
+.why    .decor-bean.d1 { top: 12%; left: 8%;  animation: floatBean 9s ease-in-out infinite 1s; --r: 10deg; }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+  .hero-grid, .about-grid, .reserve-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .hero-cup-wrap { height: 380px; }
+  .about-img img { height: 380px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+  .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 1; }
+  .gallery-item:nth-child(6) { grid-column: span 1; }
+}
+@media (max-width: 768px) {
+  section { padding: 5rem 1.2rem; }
+  .nav { padding: 1rem 1.2rem; }
+  .nav-menu, .nav-cta { display: none; }
+  .menu-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: transparent;
+    border: none;
+  }
+  .menu-toggle span {
+    width: 26px; height: 2px;
+    background: var(--cream);
+    border-radius: 2px;
+  }
+  .hero { padding: 0 1rem; }
+  .hero-grid { padding: 0 0.5rem; gap: 2rem; }
+  .hero-cup-wrap { height: 340px; }
+  .hero-cup { width: 200px; height: 230px; }
+  .hero-cup .cup-body { width: 170px; height: 140px; }
+  .hero-cup .plate { width: 230px; }
+  .about-stats { grid-template-columns: 1fr; gap: 0.8rem; }
+  .form-row { grid-template-columns: 1fr; }
+  .reserve-form { padding: 2rem 1.5rem; }
+  .reserve-img { height: 380px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 160px; }
+  .gallery-item:nth-child(1) { grid-column: span 2; }
+  .rotating-icon { width: 50px; height: 50px; font-size: 1.1rem; }
+  body { cursor: auto; }
+  a, button, input, textarea, label, .interactive { cursor: pointer; }
+}
+@media (max-width: 480px) {
+  .hero h1 { font-size: 2.4rem; }
+  .btn { padding: 0.85rem 1.5rem; font-size: 0.82rem; }
+  .coffee-grid, .testi-grid, .why-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== LOADING ANIMATION ========== -->
+<div class="loader" aria-hidden="true">
+  <div class="loader-cup">
+    <div class="steam"><span></span><span></span><span></span></div>
+    <div class="cup"></div>
+    <div class="handle"></div>
+  </div>
+  <div class="loader-text">BREWING EXPERIENCE</div>
+</div>
+
+<!-- custom cursor decorative pulse marker -->
+<div class="cursor-deco" aria-hidden="true"></div>
+
+<!-- ========== NAVIGATION ========== -->
+<nav class="nav" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="#home" class="logo">
+      <span class="logo-mark"></span>
+      Maison du Café
+    </a>
+    <ul class="nav-menu">
+      <li><a href="#about">About</a></li>
+      <li><a href="#featured">Coffee</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#testimonials">Reviews</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#reserve" class="nav-cta">Reserve</a>
+    <button class="menu-toggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<header id="home" class="hero">
+  <div class="rotating-icon" aria-hidden="true"></div>
+  <div class="hero-grid">
+    <div class="hero-text">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        <span>EST. 1987 — PARIS</span>
+      </div>
+      <h1>Where Every Sip<br/>Tells a <span class="italic">Story</span></h1>
+      <p class="hero-sub">Handpicked beans from the world's finest estates, roasted to perfection in small batches. Step into a sanctuary where aroma, ambiance and artistry converge.</p>
+      <div class="hero-cta">
+        <a href="#menu" class="btn btn-primary">Explore Menu <span class="arrow">→</span></a>
+        <a href="#reserve" class="btn btn-outline">Book a Table</a>
+      </div>
+    </div>
+    <div class="hero-cup-wrap" aria-hidden="true">
+      <div class="bean b1"></div>
+      <div class="bean b2"></div>
+      <div class="bean b3"></div>
+      <div class="bean b4"></div>
+      <div class="bean b5"></div>
+      <div class="hero-cup">
+        <div class="steam-wrap"><span></span><span></span><span></span></div>
+        <div class="cup-body">
+          <div class="coffee"></div>
+        </div>
+        <div class="handle"></div>
+        <div class="plate"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ========== ABOUT ========== -->
+<section id="about" class="about">
+  <div class="decor-bean d1"></div>
+  <div class="decor-bean d2"></div>
+  <div class="container about-grid">
+    <div class="about-img-wrap">
+      <div class="about-img">
+        <img src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?auto=format&fit=crop&w=900&q=80" alt="Barista craftinging coffee" loading="lazy"/>
+      </div>
+      <div class="about-badge-float">
+        <span class="big">38+</span>
+        <span class="small">Years of Craft</span>
+      </div>
+    </div>
+    <div class="about-content">
+      <span class="section-tag">Our Story</span>
+      <h3>Crafted with <em>passion</em>, served with soul.</h3>
+      <p>Nestled in the heart of the city, Maison du Café began as a humble roastery in 1987. Today, we continue a legacy of sourcing rare single-origin beans, roasting them slowly, and presenting them in a space designed for reflection.</p>
+      <p>Our master baristas travel the world each year—visiting farms in Ethiopia, Colombia, and Indonesia—to bring back only the most exceptional harvests. Every cup you enjoy is a small journey.</p>
+      <div class="about-stats">
+        <div class="stat"><span class="num">120k+</span><span class="lbl">Cups Served</span></div>
+        <div class="stat"><span class="num">45</span><span class="lbl">Bean Origins</span></div>
+        <div class="stat"><span class="num">18</span><span class="lbl">Awards Won</span></div>
+      </div>
+      <a href="#featured" class="btn btn-primary" style="background: var(--coffee-deep); color: var(--cream);">Our Collection <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FEATURED COFFEE ========== -->
+<section id="featured" class="featured">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-tag">Signature Brews</span>
+      <h2 class="section-title">Featured <span class="italic">Coffee</span></h2>
+      <p class="section-sub">A curated selection of our most beloved single-origin roasts, each with its own distinct character and terroir.</p>
+    </div>
+    <div class="coffee-grid">
+      <article class="coffee-card">
+        <div class="coffee-img">
+          <img src="https://images.unsplash.com/photo-1610889556528-9a770e32642f?auto=format&fit=crop&w=600&q=80" alt="Ethiopian Yirgacheffe" loading="lazy"/>
+          <span class="coffee-tag">Bestseller</span>
+        </div>
+        <h3>Ethiopian Yirgacheffe</h3>
+        <p class="desc">Floral, citrus and bergamot notes with a bright, wine-like finish.</p>
+        <div class="coffee-meta">
+          <span class="coffee-price">$18</span>
+          <span class="coffee-stars">★★★★★</span>
+        </div>
+      </article>
+      <article class="coffee-card">
+        <div class="coffee-img">
+          <img src="https://images.unsplash.com/photo-1587080413959-06b859fb107d?auto=format&fit=crop&w=600&q=80" alt="Colombian Supremo" loading="lazy"/>
+          <span class="coffee-tag">New</span>
+        </div>
+        <h3>Colombian Supremo</h3>
+        <p class="desc">Rich caramel sweetness balanced with dark chocolate and a smooth body.</p>
+        <div class="coffee-meta">
+          <span class="coffee-price">$16</span>
+          <span class="coffee-stars">★★★★★</span>
+        </div>
+      </article>
+      <article class="coffee-card">
+        <div class="coffee-img">
+          <img src="https://images.unsplash.com/photo-1497636577773-f1231844b336?auto=format&fit=crop&w=600&q=80" alt="Sumatra Mandheling" loading="lazy"/>
+          <span class="coffee-tag">Bold</span>
+        </div>
+        <h3>Sumatra Mandheling</h3>
+        <p class="desc">Earthy, full-bodied and low-acid with hints of dark cocoa and spice.</p>
+        <div class="coffee-meta">
+          <span class="coffee-price">$20</span>
+          <span class="coffee-stars">★★★★☆</span>
+        </div>
+      </article>
+      <article class="coffee-card">
+        <div class="coffee-img">
+          <img src="https://images.unsplash.com/photo-1442550528053-c431ecb55509?auto=format&fit=crop&w=600&q=80" alt="Jamaican Blue Mountain" loading="lazy"/>
+          <span class="coffee-tag">Rare</span>
+        </div>
+        <h3>Blue Mountain</h3>
+        <p class="desc">Exceptionally smooth, mild and refined—the Champagne of coffees.</p>
+        <div class="coffee-meta">
+          <span class="coffee-price">$32</span>
+          <span class="coffee-stars">★★★★★</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SPECIAL MENU ========== -->
+<section id="menu" class="menu">
+  <div class="decor-bean d1"></div>
+  <div class="decor-bean d2"></div>
+  <div class="container">
+    <div class="section-head">
+      <span class="section-tag">The Menu</span>
+      <h2 class="section-title">Special <span class="italic">Creations</span></h2>
+      <p class="section-sub">From classic espressos to inventive seasonal blends, our menu is a celebration of craftsmanship.</p>
+    </div>
+    <div class="menu-tabs">
+      <button class="tab-pill active">All</button>
+      <button class="tab-pill">Espresso</button>
+      <button class="tab-pill">Cold Brew</button>
+      <button class="tab-pill">Pastries</button>
+      <button class="tab-pill">Seasonal</button>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-item">
+        <div class="menu-item-img"><img src="https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?auto=format&fit=crop&w=300&q=80" alt="Cappuccino" loading="lazy"/></div>
+        <div class="menu-item-body">
+          <div class="menu-item-head"><h4>Classic Cappuccino</h4><span class="price">$5.50</span></div>
+          <p>Rich espresso, steamed milk and a cloud of velvety microfoam.</p>
+        </div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-img"><img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=300&q=80" alt="Caramel Macchiato" loading="lazy"/></div>
+        <div class="menu-item-body">
+          <div class="menu-item-head"><h4>Caramel Macchiato</h4><span class="price">$6.20</span></div>
+          <p>Espresso marked with vanilla milk and a golden caramel drizzle.</p>
+        </div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-img"><img src="https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=300&q=80" alt="Cold Brew" loading="lazy"/></div>
+        <div class="menu-item-body">
+          <div class="menu-item-head"><h4>Nitro Cold Brew</h4><span class="price">$6.80</span></div>
+          <p>Slow-steeped 18 hours, infused with nitrogen for a creamy texture.</p>
+        </div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-img"><img src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=300&q=80" alt="Flat White" loading="lazy"/></div>
+        <div class="menu-item-body">
+          <div class="menu-item-head"><h4>Signature Flat White</h4><span class="price">$5.80</span></div>
+          <p>Double ristretto with silky, perfectly textured microfoam milk.</p>
+        </div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-img"><img src="https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?auto=format&fit=crop&w=300&q=80" alt="Mocha" loading="lazy"/></div>
+        <div class="menu-item-body">
+          <div class="menu-item-head"><h4>Belgian Mocha</h4><span class="price">$6.50</span></div>
+          <p>Espresso, rich Belgian chocolate, steamed milk and whipped cream.</p>
+        </div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-img"><img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=300&q=80" alt="Croissant" loading="lazy"/></div>
+        <div class="menu-item-body">
+          <div class="menu-item-head"><h4>Butter Croissant</h4><span class="price">$4.20</span></div>
+          <p>Flaky, golden French pastry baked fresh each morning in-house.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== WHY CHOOSE US ========== -->
+<section class="why">
+  <div class="decor-bean d1"></div>
+  <div class="container">
+    <div class="section-head">
+      <span class="section-tag">Why Us</span>
+      <h2 class="section-title">Crafted with <span class="italic">Intention</span></h2>
+      <p class="section-sub">Every detail of our café—from bean selection to the last pour—reflects decades of devotion to the craft.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon bounce">☕</div>
+        <h4>Single-Origin Beans</h4>
+        <p>Direct trade partnerships with farms in 12 countries ensure freshness and fair prices for growers.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon bounce">🔥</div>
+        <h4>Small-Batch Roasting</h4>
+        <p>Every batch is roasted in-house by master roasters who treat each bean as a small piece of art.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon bounce">🌿</div>
+        <h4>Sustainable Sourcing</h4>
+        <p>Rainforest Alliance certified beans, compostable packaging and zero-waste kitchen practices.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon bounce">🏆</div>
+        <h4>Award-Winning Team</h4>
+        <p>Our baristas have won 18 national competitions and trained in Milan, Tokyo and Melbourne.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== GALLERY ========== -->
+<section id="gallery" class="gallery">
+  <div class="decor-bean d1"></div>
+  <div class="container">
+    <div class="section-head">
+      <span class="section-tag">Our Space</span>
+      <h2 class="section-title">A Peek <span class="italic">Inside</span></h2>
+      <p class="section-sub">Step into our world—warm lighting, the hum of conversation, and the scent of fresh roast.</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=900&q=80" alt="Café interior" loading="lazy"/>
+        <div class="gallery-caption">Main Hall</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=600&q=80" alt="Latte art" loading="lazy"/>
+        <div class="gallery-caption">Latte Art</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=600&q=80" alt="Barista at work" loading="lazy"/>
+        <div class="gallery-caption">Crafting</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1507133750040-4a8f57021571?auto=format&fit=crop&w=600&q=80" alt="Coffee beans" loading="lazy"/>
+        <div class="gallery-caption">Fresh Beans</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1559305616-3f99cd43e353?auto=format&fit=crop&w=600&q=80" alt="Pastries" loading="lazy"/>
+        <div class="gallery-caption">Fresh Pastries</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=900&q=80" alt="Reading nook" loading="lazy"/>
+        <div class="gallery-caption">Reading Nook</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1481833761820-0509d3217039?auto=format&fit=crop&w=600&q=80" alt="Espresso machine" loading="lazy"/>
+        <div class="gallery-caption">The Machine</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TESTIMONIALS ========== -->
+<section id="testimonials" class="testimonials">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-tag">Voices</span>
+      <h2 class="section-title">Loved by <span class="italic">Coffee Enthusiasts</span></h2>
+      <p class="section-sub">Honest reflections from guests who've made Maison du Café part of their daily ritual.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">The Yirgacheffe is genuinely the best coffee I've had outside of Addis. The space feels like a hug—warm wood, soft jazz, and baristas who remember your name.</p>
+        <div class="testi-person">
+          <div class="testi-avatar">EA</div>
+          <div><div class="name">Elena Armand</div><div class="role">Food Critic</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">I come here to write. The nitro cold brew fuels my afternoons and the ambiance fuels my soul. A rare place that gets both craft and comfort right.</p>
+        <div class="testi-person">
+          <div class="testi-avatar">JM</div>
+          <div><div class="name">James Moreau</div><div class="role">Novelist</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">From the hand-thrown ceramic cups to the origin story cards—every detail is considered. This isn't just a café, it's a destination.</p>
+        <div class="testi-person">
+          <div class="testi-avatar">SK</div>
+          <div><div class="name">Sophie Kawamura</div><div class="role">Designer</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== RESERVATION ========== -->
+<section id="reserve" class="reservation">
+  <div class="container reserve-grid">
+    <div class="reserve-img">
+      <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=900&q=80" alt="Reserve a table" loading="lazy"/>
+      <div class="reserve-overlay">
+        <h4>Reserve your ritual.</h4>
+        <p>Weekends fill quickly. Secure your corner of calm in advance.</p>
+      </div>
+    </div>
+    <form class="reserve-form" action="#" method="post">
+      <h3>Book a Table</h3>
+      <p class="form-sub">Fill in the details and we'll confirm your reservation by email within the hour.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="r-name">Full Name</label>
+          <input type="text" id="r-name" name="name" placeholder="Your name" required/>
+        </div>
+        <div class="form-group">
+          <label for="r-email">Email</label>
+          <input type="email" id="r-email" name="email" placeholder="you@example.com" required/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="r-date">Date</label>
+          <input type="date" id="r-date" name="date" required/>
+        </div>
+        <div class="form-group">
+          <label for="r-time">Time</label>
+          <input type="time" id="r-time" name="time" required/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="r-guests">Guests</label>
+          <select id="r-guests" name="guests">
+            <option>1 Guest</option>
+            <option>2 Guests</option>
+            <option>3 Guests</option>
+            <option>4 Guests</option>
+            <option>5+ Guests</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="r-occasion">Occasion</label>
+          <select id="r-occasion" name="occasion">
+            <option>Casual Visit</option>
+            <option>Business</option>
+            <option>Birthday</option>
+            <option>Anniversary</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group full">
+        <label for="r-note">Special Requests</label>
+        <textarea id="r-note" name="note" placeholder="Window seat, vegan menu, quiet corner..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Confirm Reservation <span class="arrow">→</span></button>
+    </form>
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section id="contact" class="contact">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-tag">Visit Us</span>
+      <h2 class="section-title">Find <span class="italic">Your Way</span> to Us</h2>
+      <p class="section-sub">We're open seven days a week, ready to welcome you with a fresh cup and a warm smile.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="contact-icon">📍</div>
+        <h4>Our Location</h4>
+        <p>42 Rue du Marché<br/>75006 Paris, France</p>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">🕐</div>
+        <h4>Opening Hours</h4>
+        <p>Mon–Fri: 7:00 – 22:00<br/>Sat–Sun: 8:00 – 23:00</p>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">📞</div>
+        <h4>Call Us</h4>
+        <p>+33 1 42 86 90 12<br/>+33 6 12 34 56 78</p>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">✉</div>
+        <h4>Email</h4>
+        <p>hello@maisonducafe.fr<br/>reservations@maisonducafe.fr</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-col footer-brand">
+      <a href="#home" class="logo"><span class="logo-mark"></span> Maison du Café</a>
+      <p>A sanctuary for coffee lovers since 1987. Every cup is a small journey through origin, craft and care.</p>
+      <div class="socials">
+        <a href="#" class="social-link" aria-label="Instagram"><span>Ig</span></a>
+        <a href="#" class="social-link" aria-label="Facebook"><span>Fb</span></a>
+        <a href="#" class="social-link" aria-label="Twitter"><span>Tw</span></a>
+        <a href="#" class="social-link" aria-label="Pinterest"><span>Pn</span></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Explore</h5>
+      <ul>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#featured">Our Coffee</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Services</h5>
+      <ul>
+        <li><a href="#reserve">Reservations</a></li>
+        <li><a href="#">Private Events</a></li>
+        <li><a href="#">Catering</a></li>
+        <li><a href="#">Coffee Classes</a></li>
+        <li><a href="#">Gift Cards</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Newsletter</h5>
+      <p>Get seasonal specials, brewing tips and event invites in your inbox.</p>
+      <form class="newsletter" action="#" method="post">
+        <input type="email" placeholder="your@email.com" required aria-label="Email"/>
+        <button type="submit">Join</button>
+      </form>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Maison du Café. Crafted with passion in Paris.</p>
+    <p><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Cookies</a></p>
+  </div>
+</footer>
+
+</body>
 </html>
+
